@@ -1,5 +1,4 @@
 Options -Indexes
-ServerSignature Off
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -7,10 +6,11 @@ ServerSignature Off
 </IfModule>
 
 <FilesMatch "\.(sql|log|md)$">
-    <IfModule !mod_authz_core.c>
-        Deny from all
-    </IfModule>
     <IfModule mod_authz_core.c>
         Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
     </IfModule>
 </FilesMatch>
