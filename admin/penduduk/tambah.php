@@ -24,14 +24,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status_perkawinan = trim($_POST['status_perkawinan']);
     $pekerjaan = trim($_POST['pekerjaan']);
     $kewarganegaraan = trim($_POST['kewarganegaraan']);
+    $no_kk = trim($_POST['no_kk']) ?: null;
+    $hubungan_keluarga = $_POST['hubungan_keluarga'] ?? 'LAINNYA';
 
     if (!$nik || !$nama) {
         $error = 'NIK dan Nama wajib diisi!';
     } elseif (cekNikDuplikat($nik)) {
         $error = 'NIK ' . $nik . ' sudah terdaftar!';
     } else {
-        $stmt = $pdo->prepare("INSERT INTO penduduk (nik, nama, tempat_lahir, tanggal_lahir, jenis_kelamin, alamat, rt, rw, dusun, agama, status_perkawinan, pekerjaan, kewarganegaraan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
-        $stmt->execute([$nik, $nama, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $alamat, $rt, $rw, $dusun, $agama, $status_perkawinan, $pekerjaan, $kewarganegaraan]);
+        $stmt = $pdo->prepare("INSERT INTO penduduk (nik, no_kk, hubungan_keluarga, nama, tempat_lahir, tanggal_lahir, jenis_kelamin, alamat, rt, rw, dusun, agama, status_perkawinan, pekerjaan, kewarganegaraan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([$nik, $no_kk, $hubungan_keluarga, $nama, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $alamat, $rt, $rw, $dusun, $agama, $status_perkawinan, $pekerjaan, $kewarganegaraan]);
         $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Data penduduk berhasil ditambahkan!'];
         redirect('index.php');
     }
@@ -70,6 +72,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="form-label">NIK <span class="text-danger">*</span></label>
                             <input type="text" name="nik" id="nik" class="form-control" maxlength="16" required>
                             <div id="nik-duplicate-msg" class="nik-duplicate"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">No. Kartu Keluarga (KK)</label>
+                            <div class="input-group">
+                                <input type="text" name="no_kk" class="form-control" maxlength="16" value="<?= htmlspecialchars($_GET['no_kk'] ?? '') ?>">
+                                <a href="../keluarga/tambah.php" class="btn btn-outline-primary" target="_blank" title="Tambah KK Baru"><i class="bi bi-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Hubungan</label>
+                            <select name="hubungan_keluarga" class="form-select">
+                                <option value="KEPALA KELUARGA">Kepala Keluarga</option>
+                                <option value="SUAMI">Suami</option>
+                                <option value="ISTRI">Istri</option>
+                                <option value="ANAK">Anak</option>
+                                <option value="MENANTU">Menantu</option>
+                                <option value="CUCU">Cucu</option>
+                                <option value="ORANG TUA">Orang Tua</option>
+                                <option value="MERTUA">Mertua</option>
+                                <option value="FAMILI LAIN">Famili Lain</option>
+                                <option value="LAINNYA">Lainnya</option>
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>

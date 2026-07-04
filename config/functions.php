@@ -8,51 +8,91 @@ function getProfilDesa() {
     return $stmt->fetch();
 }
 
-function getTotalPenduduk() {
+function getTotalPenduduk($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT COUNT(*) FROM penduduk WHERE status_hidup = 'hidup'");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM penduduk WHERE status_hidup = 'hidup' AND no_kk = ?");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM penduduk WHERE status_hidup = 'hidup'");
+    }
     return $stmt->fetchColumn();
 }
 
-function getTotalMeninggal() {
+function getTotalMeninggal($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT COUNT(*) FROM kematian");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM kematian k JOIN penduduk p ON k.penduduk_id = p.id WHERE p.no_kk = ?");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM kematian");
+    }
     return $stmt->fetchColumn();
 }
 
-function getTotalPindah() {
+function getTotalPindah($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT COUNT(*) FROM pindah");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM pindah pd JOIN penduduk p ON pd.penduduk_id = p.id WHERE p.no_kk = ?");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM pindah");
+    }
     return $stmt->fetchColumn();
 }
 
-function getTotalPendudukKeseluruhan() {
+function getTotalPendudukKeseluruhan($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT COUNT(*) FROM penduduk");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM penduduk WHERE no_kk = ?");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM penduduk");
+    }
     return $stmt->fetchColumn();
 }
 
-function getPendudukPerDusun() {
+function getPendudukPerDusun($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT dusun, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY dusun ORDER BY jumlah DESC");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT dusun, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' AND no_kk = ? GROUP BY dusun ORDER BY jumlah DESC");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT dusun, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY dusun ORDER BY jumlah DESC");
+    }
     return $stmt->fetchAll();
 }
 
-function getPendudukPerAgama() {
+function getPendudukPerAgama($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT agama, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY agama ORDER BY jumlah DESC");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT agama, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' AND no_kk = ? GROUP BY agama ORDER BY jumlah DESC");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT agama, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY agama ORDER BY jumlah DESC");
+    }
     return $stmt->fetchAll();
 }
 
-function getPendudukPerPekerjaan() {
+function getPendudukPerPekerjaan($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT pekerjaan, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY pekerjaan ORDER BY jumlah DESC");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT pekerjaan, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' AND no_kk = ? GROUP BY pekerjaan ORDER BY jumlah DESC");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT pekerjaan, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY pekerjaan ORDER BY jumlah DESC");
+    }
     return $stmt->fetchAll();
 }
 
-function getPendudukPerJK() {
+function getPendudukPerJK($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT jenis_kelamin, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY jenis_kelamin");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT jenis_kelamin, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' AND no_kk = ? GROUP BY jenis_kelamin");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT jenis_kelamin, COUNT(*) as jumlah FROM penduduk WHERE status_hidup = 'hidup' GROUP BY jenis_kelamin");
+    }
     return $stmt->fetchAll();
 }
 
@@ -89,9 +129,14 @@ function cekNikDuplikat($nik, $id = null) {
     return $stmt->fetchColumn() > 0;
 }
 
-function getUsiaStats() {
+function getUsiaStats($no_kk = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT tanggal_lahir FROM penduduk WHERE status_hidup = 'hidup' AND tanggal_lahir IS NOT NULL");
+    if ($no_kk) {
+        $stmt = $pdo->prepare("SELECT tanggal_lahir FROM penduduk WHERE status_hidup = 'hidup' AND tanggal_lahir IS NOT NULL AND no_kk = ?");
+        $stmt->execute([$no_kk]);
+    } else {
+        $stmt = $pdo->query("SELECT tanggal_lahir FROM penduduk WHERE status_hidup = 'hidup' AND tanggal_lahir IS NOT NULL");
+    }
     $data = $stmt->fetchAll();
     
     $stats = ['0-5' => 0, '6-12' => 0, '13-17' => 0, '18-25' => 0, '26-35' => 0, '36-50' => 0, '51-60' => 0, '60+' => 0];
@@ -107,4 +152,43 @@ function getUsiaStats() {
         else $stats['60+']++;
     }
     return $stats;
+}
+
+function getKeluargaByKK($no_kk) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM keluarga WHERE no_kk = ?");
+    $stmt->execute([$no_kk]);
+    return $stmt->fetch();
+}
+
+function getAnggotaKeluarga($no_kk) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM penduduk WHERE no_kk = ? ORDER BY FIELD(hubungan_keluarga, 'KEPALA KELUARGA','SUAMI','ISTRI','ANAK','MENANTU','CUCU','ORANG TUA','MERTUA','FAMILI LAIN','LAINNYA')");
+    $stmt->execute([$no_kk]);
+    return $stmt->fetchAll();
+}
+
+function getSemuaKeluarga() {
+    global $pdo;
+    $stmt = $pdo->query("SELECT k.*, (SELECT COUNT(*) FROM penduduk WHERE no_kk = k.no_kk) as jumlah_anggota FROM keluarga k ORDER BY k.no_kk");
+    return $stmt->fetchAll();
+}
+
+function cekKKDuplikat($no_kk, $id = null) {
+    global $pdo;
+    if ($id) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM keluarga WHERE no_kk = ? AND id != ?");
+        $stmt->execute([$no_kk, $id]);
+    } else {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM keluarga WHERE no_kk = ?");
+        $stmt->execute([$no_kk]);
+    }
+    return $stmt->fetchColumn() > 0;
+}
+
+function cekUserByKK($no_kk) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE no_kk = ?");
+    $stmt->execute([$no_kk]);
+    return $stmt->fetchColumn() > 0;
 }

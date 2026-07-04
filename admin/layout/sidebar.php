@@ -19,11 +19,13 @@ $isAdmin = isAdmin();
         <a href="../../index.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'index.php' && basename(dirname($_SERVER['PHP_SELF'])) == '' ? 'active' : '' ?>"><i class="bi bi-house-door"></i> Dashboard</a>
         <?php if ($isAdmin): ?>
         <a href="../penduduk/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'penduduk') !== false ? 'active' : '' ?>"><i class="bi bi-people"></i> Data Penduduk</a>
+        <a href="../keluarga/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'keluarga') !== false ? 'active' : '' ?>"><i class="bi bi-house-heart"></i> Data Keluarga</a>
         <a href="../kematian/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'kematian') !== false ? 'active' : '' ?>"><i class="bi bi-heartbreak"></i> Kematian</a>
         <a href="../pindah/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'pindah') !== false ? 'active' : '' ?>"><i class="bi bi-box-arrow-right"></i> Pindah</a>
         <div class="menu-label">Laporan</div>
         <a href="../laporan/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'laporan') !== false ? 'active' : '' ?>"><i class="bi bi-file-earmark-text"></i> Rekapan & Laporan</a>
         <div class="menu-label">Pengaturan</div>
+        <a href="../restore/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'restore') !== false ? 'active' : '' ?>"><i class="bi bi-cloud-upload"></i> Restore Data</a>
         <a href="../profil/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'profil') !== false ? 'active' : '' ?>"><i class="bi bi-building-gear"></i> Profil Desa</a>
         <a href="../users/index.php" class="nav-item <?= strpos($_SERVER['PHP_SELF'], 'users') !== false ? 'active' : '' ?>"><i class="bi bi-shield-lock"></i> Manajemen User</a>
         <?php endif; ?>

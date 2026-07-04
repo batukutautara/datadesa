@@ -20,16 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username'];
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['user_nama'] = $user['nama'] ?: $user['username'];
+            $_SESSION['user_no_kk'] = $user['no_kk'];
 
             $stmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
             $stmt->execute([$user['id']]);
 
             redirect('index.php');
         } else {
-            $error = 'Username atau password salah!';
+            $error = 'Username/No. KK atau password salah!';
         }
     } else {
-        $error = 'Silakan isi username dan password!';
+        $error = 'Silakan isi username/no. KK dan password!';
     }
 }
 
@@ -63,14 +64,17 @@ $profil = getProfilDesa();
 
         <form method="POST">
             <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Masukkan username" required autofocus>
+                <label class="form-label">Username / No. KK</label>
+                <input type="text" name="username" class="form-control" placeholder="Masukkan username atau no. KK" required autofocus>
             </div>
             <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
             </div>
             <button type="submit" class="btn-login">MASUK</button>
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">Admin: login dengan username<br>Keluarga: login dengan No. KK<br>Password default: <code>kk</code> + No. KK (contoh: <code>kk3273010101010101</code>)</small>
+                            </div>
         </form>
     </div>
 </body>

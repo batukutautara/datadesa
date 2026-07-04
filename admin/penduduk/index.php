@@ -128,6 +128,7 @@ $rtList = $pdo->query("SELECT DISTINCT rt FROM penduduk WHERE rt != '' ORDER BY 
                                 <tr>
                                     <th>No</th>
                                     <th>NIK</th>
+                                    <th>No. KK</th>
                                     <th>Nama</th>
                                     <th>Tempat, Tgl Lahir</th>
                                     <th>JK</th>
@@ -143,6 +144,7 @@ $rtList = $pdo->query("SELECT DISTINCT rt FROM penduduk WHERE rt != '' ORDER BY 
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($p['nik']) ?></td>
+                                    <td><?= htmlspecialchars($p['no_kk'] ?: '-') ?></td>
                                     <td><?= htmlspecialchars($p['nama']) ?></td>
                                     <td><?= htmlspecialchars($p['tempat_lahir']) ?>, <?= formatTanggal($p['tanggal_lahir']) ?></td>
                                     <td><?= $p['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan' ?></td>

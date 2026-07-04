@@ -33,14 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status_perkawinan = trim($_POST['status_perkawinan']);
     $pekerjaan = trim($_POST['pekerjaan']);
     $kewarganegaraan = trim($_POST['kewarganegaraan']);
+    $no_kk = trim($_POST['no_kk']) ?: null;
+    $hubungan_keluarga = $_POST['hubungan_keluarga'] ?? 'LAINNYA';
 
     if (!$nik || !$nama) {
         $error = 'NIK dan Nama wajib diisi!';
     } elseif (cekNikDuplikat($nik, $id)) {
         $error = 'NIK ' . $nik . ' sudah terdaftar!';
     } else {
-        $stmt = $pdo->prepare("UPDATE penduduk SET nik=?, nama=?, tempat_lahir=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, rt=?, rw=?, dusun=?, agama=?, status_perkawinan=?, pekerjaan=?, kewarganegaraan=? WHERE id=?");
-        $stmt->execute([$nik, $nama, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $alamat, $rt, $rw, $dusun, $agama, $status_perkawinan, $pekerjaan, $kewarganegaraan, $id]);
+        $stmt = $pdo->prepare("UPDATE penduduk SET nik=?, no_kk=?, hubungan_keluarga=?, nama=?, tempat_lahir=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, rt=?, rw=?, dusun=?, agama=?, status_perkawinan=?, pekerjaan=?, kewarganegaraan=? WHERE id=?");
+        $stmt->execute([$nik, $no_kk, $hubungan_keluarga, $nama, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $alamat, $rt, $rw, $dusun, $agama, $status_perkawinan, $pekerjaan, $kewarganegaraan, $id]);
         $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Data penduduk berhasil diupdate!'];
         redirect('index.php');
     }
@@ -79,6 +81,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" name="nik" id="nik" class="form-control" maxlength="16" value="<?= htmlspecialchars($p['nik']) ?>" required>
                             <input type="hidden" id="penduduk_id" value="<?= $p['id'] ?>">
                             <div id="nik-duplicate-msg" class="nik-duplicate"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">No. Kartu Keluarga (KK)</label>
+                            <div class="input-group">
+                                <input type="text" name="no_kk" class="form-control" maxlength="16" value="<?= htmlspecialchars($p['no_kk'] ?? '') ?>">
+                                <a href="../keluarga/tambah.php" class="btn btn-outline-primary" target="_blank" title="Tambah KK Baru"><i class="bi bi-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Hubungan</label>
+                            <select name="hubungan_keluarga" class="form-select">
+                                <option value="KEPALA KELUARGA" <?= $p['hubungan_keluarga']=='KEPALA KELUARGA'?'selected':'' ?>>Kepala Keluarga</option>
+                                <option value="SUAMI" <?= $p['hubungan_keluarga']=='SUAMI'?'selected':'' ?>>Suami</option>
+                                <option value="ISTRI" <?= $p['hubungan_keluarga']=='ISTRI'?'selected':'' ?>>Istri</option>
+                                <option value="ANAK" <?= $p['hubungan_keluarga']=='ANAK'?'selected':'' ?>>Anak</option>
+                                <option value="MENANTU" <?= $p['hubungan_keluarga']=='MENANTU'?'selected':'' ?>>Menantu</option>
+                                <option value="CUCU" <?= $p['hubungan_keluarga']=='CUCU'?'selected':'' ?>>Cucu</option>
+                                <option value="ORANG TUA" <?= $p['hubungan_keluarga']=='ORANG TUA'?'selected':'' ?>>Orang Tua</option>
+                                <option value="MERTUA" <?= $p['hubungan_keluarga']=='MERTUA'?'selected':'' ?>>Mertua</option>
+                                <option value="FAMILI LAIN" <?= $p['hubungan_keluarga']=='FAMILI LAIN'?'selected':'' ?>>Famili Lain</option>
+                                <option value="LAINNYA" <?= $p['hubungan_keluarga']=='LAINNYA'?'selected':'' ?>>Lainnya</option>
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
